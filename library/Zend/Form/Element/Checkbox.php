@@ -200,4 +200,20 @@ class Zend_Form_Element_Checkbox extends Zend_Form_Element_Xhtml
     {
         return $this->checked;
     }
+
+    public function loadDefaultDecorators()
+    {
+        parent::loadDefaultDecorators();
+
+        if (Default_Service_Package::isNylasAllowed()) {
+            $this->addDecorator('info');
+        }
+
+        // Disable 'for' attribute
+        if (false !== $decorator = $this->getDecorator('label')) {
+            $decorator->setOption('disableFor', true);
+        }
+
+        return $this;
+    }
 }

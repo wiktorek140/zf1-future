@@ -19,6 +19,7 @@
  * @version    $Id$
  */
 
+use Predis\Connection\ConnectionException;
 
 /**
  * @package    Zend_Cache
@@ -303,8 +304,14 @@ class Zend_Cache_Core
         $this->_validateIdOrTag($id);
 
         $this->_log("Zend_Cache_Core: load item '{$id}'", 7);
-        $data = $this->_backend->load($id, $doNotTestCacheValidity);
-        if ($data===false) {
+        try {
+            $data = $this->_backend->load($id, $doNotTestCacheValidity);
+        } catch (ConnectionException $e) {
+            Core_Log::log($e, Core_Log::CRIT, 'redis');
+            // when redis throw error, return false as it cannot read from cache
+            return false;
+        }
+        if ($data === false) {
             // no cache available
             return false;
         }

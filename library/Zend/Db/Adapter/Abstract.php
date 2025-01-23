@@ -742,6 +742,28 @@ abstract class Zend_Db_Adapter_Abstract
     }
 
     /**
+     * Fetches all SQL result rows as a sequential array.
+     * Uses the current fetchMode for the adapter.
+     *
+     * @param string|Zend_Db_Select $sql An SQL SELECT statement.
+     * @param mixed $bind Data to bind into SELECT placeholders.
+     * @param mixed $fetchMode Override current fetch mode.
+     * @throws Zend_Db_Statement_Exception
+     */
+    public function fetchAllTraversable($sql, $bind = [], $fetchMode = null): Generator
+    {
+        if ($fetchMode === null) {
+            $fetchMode = $this->_fetchMode;
+        }
+        $stmt = $this->query($sql, $bind);
+
+        while ($row = $stmt->fetch($fetchMode)) {
+            yield $row;
+        }
+    }
+
+
+    /**
      * Fetches the first row of the SQL result.
      * Uses the current fetchMode for the adapter.
      *
@@ -782,6 +804,40 @@ abstract class Zend_Db_Adapter_Abstract
             $tmp = array_values(array_slice($row, 0, 1));
             $data[$tmp[0]] = $row;
         }
+        return $data;
+    }
+
+    /**
+     * Fetches all SQL result rows as an key-only array.
+     *
+     * The first column is the key, the entire row array is the
+     * value.  You should construct the query to be sure that
+     * the first column contains unique values, or else
+     * rows with duplicate values in the first column will
+     * overwrite previous data.
+     *
+     * @param string|Zend_Db_Select $sql An SQL SELECT statement.
+     * @param mixed $bind Data to bind into SELECT placeholders.
+     * @param string|null $idKey if it can be determined, it will simplicize execution
+     * @return array
+     * @throws Zend_Db_Statement_Exception
+     */
+    public function fetchAssocKeys($sql, $bind = [], ?string $idKey = null)
+    {
+        $stmt = $this->query($sql, $bind);
+        $data = [];
+        if ($idKey !== null) {
+            while ($row = $stmt->fetch(Zend_Db::FETCH_ASSOC)) {
+                $data[] = $row[$idKey];
+            }
+            return $data;
+        }
+
+        while ($row = $stmt->fetch(Zend_Db::FETCH_ASSOC)) {
+            $tmp = array_values(array_slice($row, 0, 1));
+            $data[] = $tmp[0];
+        }
+        $tmp = null;
         return $data;
     }
 

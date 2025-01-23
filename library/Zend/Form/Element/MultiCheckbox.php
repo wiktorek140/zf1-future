@@ -61,6 +61,10 @@ class Zend_Form_Element_MultiCheckbox extends Zend_Form_Element_Multi
             return $this;
         }
 
+        if (Default_Service_Package::isNylasAllowed() && Default_Service_Package::isLivespaceFolderAvailable()) {
+            $this->addDecorator('info');
+        }
+
         parent::loadDefaultDecorators();
 
         // Disable 'for' attribute
