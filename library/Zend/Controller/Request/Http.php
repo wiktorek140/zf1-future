@@ -48,6 +48,9 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
      */
     public const SCHEME_HTTPS = 'https';
 
+    /** @var bool  */
+    protected $isCoreRequest = false;
+
     /**
      * Allowed parameter sources
      * @var array
@@ -127,6 +130,8 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
         } else {
             $this->setRequestUri();
         }
+
+        $this->isCoreRequest = substr($this->_requestUri, 0, 9) === '/core/api';
     }
 
     /**
@@ -170,6 +175,11 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
     public function get($key)
     {
         return $this->__get($key);
+    }
+
+    public function isCoreRequest(): bool
+    {
+        return $this->isCoreRequest;
     }
 
     /**

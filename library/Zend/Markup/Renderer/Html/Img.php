@@ -78,7 +78,7 @@ class Zend_Markup_Renderer_Html_Img extends Zend_Markup_Renderer_Html_HtmlAbstra
         $alt = htmlentities($alt, ENT_QUOTES, Zend_Markup_Renderer_Html::getEncoding());
 
 
-        return "<img src=\"{$uri}\" alt=\"{$alt}\"" . Zend_Markup_Renderer_Html::renderAttributes($token) . " />";
+        return "<img loading=\"lazy\" src=\"{$uri}\" alt=\"{$alt}\"" . Zend_Markup_Renderer_Html::renderAttributes($token) . " />";
     }
 
 }

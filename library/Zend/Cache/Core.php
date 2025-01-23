@@ -19,7 +19,6 @@
  * @version    $Id$
  */
 
-
 /**
  * @package    Zend_Cache
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
@@ -303,8 +302,14 @@ class Zend_Cache_Core
         $this->_validateIdOrTag($id);
 
         $this->_log("Zend_Cache_Core: load item '{$id}'", 7);
-        $data = $this->_backend->load($id, $doNotTestCacheValidity);
-        if ($data===false) {
+        try {
+            $data = $this->_backend->load($id, $doNotTestCacheValidity);
+        } catch (Exception $e) {
+            $this->_log($e->getMessage());
+            // when redis throw error, return false as it cannot read from cache
+            return false;
+        }
+        if ($data === false) {
             // no cache available
             return false;
         }

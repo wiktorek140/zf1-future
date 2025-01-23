@@ -61,6 +61,8 @@ class Zend_Form_Element_MultiCheckbox extends Zend_Form_Element_Multi
             return $this;
         }
 
+        $this->addDecorator('info');
+
         parent::loadDefaultDecorators();
 
         // Disable 'for' attribute

@@ -147,6 +147,12 @@ class Zend_Form_Element implements Zend_Validate_Interface
     protected $_label;
 
     /**
+     * Element info
+     * @var string
+     */
+    protected $_info;
+
+    /**
      * Plugin loaders for filter and validator chains
      * @var array
      */
@@ -661,6 +667,33 @@ class Zend_Form_Element implements Zend_Validate_Interface
         }
 
         return $this->_label;
+    }
+
+    /**
+     * Set element info
+     *
+     * @param  string $info
+     * @return Zend_Form_Element
+     */
+    public function setInfo($info)
+    {
+        $this->_info = (string) $info;
+        return $this;
+    }
+
+    /**
+     * Retrieve element info
+     *
+     * @return string
+     */
+    public function getInfo()
+    {
+        $translator = $this->getTranslator();
+        if (null !== $translator) {
+            return $translator->translate($this->_info);
+        }
+
+        return $this->_info;
     }
 
     /**
