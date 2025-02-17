@@ -313,7 +313,7 @@ class Zend_Cache_Core
             // no cache available
             return false;
         }
-        if ((!$doNotUnserialize) && $this->_options['automatic_serialization']) {
+        if (!is_null($data) && (!$doNotUnserialize) && $this->_options['automatic_serialization']) {
             // we need to unserialize before sending the result
             return unserialize($data);
         }
